@@ -2,7 +2,7 @@
 
 synced:
 	@echo "building $@..."
-	@go build -v -o $(CURDIR)/bin/synced main.go
+	@go build -o $(CURDIR)/bin/synced main.go
 
 clean:
-	-rm -rf $(CURDIR)/bin/synced
+	rm -rf $(CURDIR)/bin/synced

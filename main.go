@@ -56,7 +56,7 @@ func main() {
 					now := time.Now().Unix()
 					current := uint64(now - now%10)
 
-					if lastFetched > current && lastFetched-current <= 10 {
+					if lastFetched >= current && lastFetched-current <= 10 {
 						w.WriteHeader(http.StatusOK)
 						w.Write([]byte("ok"))
 					} else {
