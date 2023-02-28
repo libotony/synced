@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -18,6 +19,8 @@ import (
 type BlockHeader struct {
 	Timestamp uint64
 }
+
+const blockInterval = 10 // block interval in seconds
 
 var lastFetched uint64
 
@@ -54,9 +57,9 @@ func main() {
 			router.HandleFunc("/synced", func(w http.ResponseWriter, req *http.Request) {
 				if err := (func() error {
 					now := time.Now().Unix()
-					current := uint64(now - now%10)
+					current := uint64(now - now%blockInterval)
 
-					if lastFetched >= current && lastFetched-current <= 10 {
+					if lastFetched >= current && lastFetched <= current+blockInterval {
 						w.WriteHeader(http.StatusOK)
 						w.Write([]byte("ok"))
 					} else {
@@ -76,13 +79,13 @@ func main() {
 							return err
 						}
 
-						if current+uint64(diff)*10 > b.Timestamp {
+						if b.Timestamp+uint64(diff)*blockInterval >= current {
 							w.WriteHeader(http.StatusOK)
 							w.Write([]byte("ok"))
 							lastFetched = b.Timestamp
 						} else {
 							w.WriteHeader(http.StatusServiceUnavailable)
-							w.Write([]byte("syncing"))
+							fmt.Fprintf(w, "syncing(%d blocks)", (uint64(now)-b.Timestamp)/blockInterval)
 						}
 					}
 
