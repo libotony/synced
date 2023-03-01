@@ -26,11 +26,13 @@ bin/synced --rest http://127.0.0.1:8669
 
 ### Docker
 
-TBD
+```
+docker run -d -p 8000:8000 libotony/synced:latest <options>
+```
 
 ## Run
 
-``` shell
+```
 bin/synced -h
 NAME:
    synced - tells if thor is synced
